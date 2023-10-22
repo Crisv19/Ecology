@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecology.Shared", "Ecology.Shared\Ecology.Shared.csproj", "{9893FC9E-FC01-4F8E-AF28-020CF66E942F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecology.Shared", "Ecology.Shared\Ecology.Shared.csproj", "{9893FC9E-FC01-4F8E-AF28-020CF66E942F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecology.API", "Ecology.API\Ecology.API.csproj", "{9C1DB108-00B5-4822-8212-761AE5983999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecology.API", "Ecology.API\Ecology.API.csproj", "{9C1DB108-00B5-4822-8212-761AE5983999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecology.WEB", "Ecology.WEB\Ecology.WEB.csproj", "{7D61F523-8B83-4535-86EF-F84DA6D51553}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecology.WEB", "Ecology.WEB\Ecology.WEB.csproj", "{7D61F523-8B83-4535-86EF-F84DA6D51553}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

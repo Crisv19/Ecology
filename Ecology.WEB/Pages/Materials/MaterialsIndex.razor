@@ -1,0 +1,54 @@
+﻿
+@using Ecology.Shared.Entities;
+@using Ecology.WEB.Repositories;
+
+@page "/materials"
+@inject IRepository repository
+
+<h3>Materials</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/materials/create">New Material</a>
+</div>
+
+<GenericList MyList="Materials">
+
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Material</th>
+                    <th></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var material in Materials!)
+                {
+                    <tr>
+                        <td>
+                            @material.Name
+                        </td>
+                        <td>
+                            <a class="btn btn-warning">Editar</a>
+                            <button class="btn btn-danger">Borrar</button>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Material>? Materials { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var responseHppt = await repository.Get<List<Material>>("/api/materials");
+        Materials = responseHppt.Response!;
+    }
+}
