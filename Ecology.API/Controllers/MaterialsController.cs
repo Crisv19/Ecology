@@ -58,5 +58,30 @@ namespace Ecology.API.Controllers
             return Ok(material);
 
         }
+
+        [HttpPut]
+        public async Task<ActionResult> Put(Material material)
+        {
+            _context.Update(material);
+            await _context.SaveChangesAsync();
+            return Ok(material);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var afectedRows = await _context.Materials
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
+
+            if (afectedRows == 0)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+
     }
 }
