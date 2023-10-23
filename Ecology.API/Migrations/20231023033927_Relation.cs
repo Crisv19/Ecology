@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecology.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicialy : Migration
+    public partial class Relation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,19 +57,32 @@ namespace Ecology.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Materials",
+                name: "Collectors",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Peso = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypMaterial = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CellPhon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Identification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Materials", x => x.Id);
+                    table.PrimaryKey("PK_Collectors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TypMaterials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TypMaterials", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,6 +191,105 @@ namespace Ecology.API.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Leaders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CellPhon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Identification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NumberRecycler = table.Column<int>(type: "int", nullable: false),
+                    CollectorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Leaders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Leaders_Collectors_CollectorId",
+                        column: x => x.CollectorId,
+                        principalTable: "Collectors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recyclers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CellPhon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Identification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CollectorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recyclers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recyclers_Collectors_CollectorId",
+                        column: x => x.CollectorId,
+                        principalTable: "Collectors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Storages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    TypRecicl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LeaderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Storages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Storages_Leaders_LeaderId",
+                        column: x => x.LeaderId,
+                        principalTable: "Leaders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Materials",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Peso = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Typmateria = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RecyclerId = table.Column<int>(type: "int", nullable: false),
+                    TypMaterialId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Materials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Materials_Recyclers_RecyclerId",
+                        column: x => x.RecyclerId,
+                        principalTable: "Recyclers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Materials_TypMaterials_TypMaterialId",
+                        column: x => x.TypMaterialId,
+                        principalTable: "TypMaterials",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -218,10 +330,42 @@ namespace Ecology.API.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Leaders_CollectorId",
+                table: "Leaders",
+                column: "CollectorId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Materials_Name",
                 table: "Materials",
                 column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Materials_RecyclerId",
+                table: "Materials",
+                column: "RecyclerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Materials_TypMaterialId",
+                table: "Materials",
+                column: "TypMaterialId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Recyclers_CollectorId",
+                table: "Recyclers",
+                column: "CollectorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Storages_LeaderId",
+                table: "Storages",
+                column: "LeaderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TypMaterials_Name",
+                table: "TypMaterials",
+                column: "Name",
+                unique: true,
+                filter: "[Name] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -246,10 +390,25 @@ namespace Ecology.API.Migrations
                 name: "Materials");
 
             migrationBuilder.DropTable(
+                name: "Storages");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Recyclers");
+
+            migrationBuilder.DropTable(
+                name: "TypMaterials");
+
+            migrationBuilder.DropTable(
+                name: "Leaders");
+
+            migrationBuilder.DropTable(
+                name: "Collectors");
         }
     }
 }

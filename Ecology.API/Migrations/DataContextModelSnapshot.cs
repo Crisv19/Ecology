@@ -22,6 +22,64 @@ namespace Ecology.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Ecology.Shared.Entities.Collector", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CellPhon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Identification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Collectors");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Leader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CellPhon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CollectorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Identification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberRecycler")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollectorId");
+
+                    b.ToTable("Leaders");
+                });
+
             modelBuilder.Entity("Ecology.Shared.Entities.Material", b =>
                 {
                     b.Property<int>("Id")
@@ -42,7 +100,13 @@ namespace Ecology.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypMaterial")
+                    b.Property<int>("RecyclerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TypMaterialId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Typmateria")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -50,7 +114,88 @@ namespace Ecology.API.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("RecyclerId");
+
+                    b.HasIndex("TypMaterialId");
+
                     b.ToTable("Materials");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Recycler", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CellPhon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CollectorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Identification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollectorId");
+
+                    b.ToTable("Recyclers");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Storage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TypRecicl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LeaderId");
+
+                    b.ToTable("Storages");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.TypMaterial", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
+                    b.ToTable("TypMaterials");
                 });
 
             modelBuilder.Entity("Ecology.Shared.Entities.User", b =>
@@ -275,6 +420,58 @@ namespace Ecology.API.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Leader", b =>
+                {
+                    b.HasOne("Ecology.Shared.Entities.Collector", "Collector")
+                        .WithMany()
+                        .HasForeignKey("CollectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collector");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Material", b =>
+                {
+                    b.HasOne("Ecology.Shared.Entities.Recycler", "Recycler")
+                        .WithMany()
+                        .HasForeignKey("RecyclerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ecology.Shared.Entities.TypMaterial", "TypMaterial")
+                        .WithMany()
+                        .HasForeignKey("TypMaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recycler");
+
+                    b.Navigation("TypMaterial");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Recycler", b =>
+                {
+                    b.HasOne("Ecology.Shared.Entities.Collector", "Collector")
+                        .WithMany()
+                        .HasForeignKey("CollectorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Collector");
+                });
+
+            modelBuilder.Entity("Ecology.Shared.Entities.Storage", b =>
+                {
+                    b.HasOne("Ecology.Shared.Entities.Leader", "Leader")
+                        .WithMany()
+                        .HasForeignKey("LeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Leader");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

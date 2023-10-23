@@ -11,6 +11,20 @@ namespace Ecology.API.Data
 
 
         public DbSet<Material>Materials { get; set; }
+
+        public DbSet<Leader>Leaders { get; set; }
+
+        public DbSet<Collector>Collectors { get; set; }
+        public DbSet<Recycler>Recyclers{ get; set; }
+
+        public DbSet<TypMaterial> TypMaterials { get; set; }
+
+        public DbSet<Storage> Storages { get; set; }
+
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 
         {
@@ -18,6 +32,8 @@ namespace Ecology.API.Data
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Material>().HasIndex(c => c.Name).IsUnique();
+
+            modelBuilder.Entity<TypMaterial>().HasIndex(c => c.Name).IsUnique();
 
         }
 

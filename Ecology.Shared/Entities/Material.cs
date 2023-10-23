@@ -20,6 +20,14 @@ namespace Ecology.Shared.Entities
         [Required(ErrorMessage = "Este campo es requerido")]
         public string Peso { get; set; } = null;
 
-        public string TypMaterial { get; set; } = null; 
+        public string Typmateria { get; set; } = null; 
+
+        public int RecyclerId { get; set; }
+
+        public Recycler Recycler {  get; set; }
+
+        public int TypMaterialId { get; set; }
+
+        public TypMaterial TypMaterial { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ecology.Shared.Entities
 {
-    public class Recycler
+    public class Collector
     {
         public int Id { get; set; }
 
@@ -18,9 +18,8 @@ namespace Ecology.Shared.Entities
 
         public string Address { get; set; }
 
-        public int CollectorId { get; set; }
+        
 
-        public Collector Collector { get; set; }
-
+        
     }
 }
