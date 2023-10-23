@@ -23,5 +23,5 @@ namespace Ecology.Shared.Entities
 
 
 
-    }
-}
+ }
+

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecology.API.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class Inicialy : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
