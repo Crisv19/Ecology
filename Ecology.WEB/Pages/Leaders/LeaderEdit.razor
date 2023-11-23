@@ -1,0 +1,66 @@
+﻿@page "/leaders/edit/{Id:int}"
+@inject NavigationManager navigationManager
+@inject IRepository repository
+@inject SweetAlertService swal
+
+<h3>Editar lider</h3>
+
+@if (leader is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <LeaderForm @ref="leaderForm" Leader="leader" OnValidSubmit="Edit" ReturnAction="Return" />
+}
+
+@code {
+    private Leader? leader;
+    private LeaderForm? leaderForm;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHTTP = await repository.Get<Leader>($"api/leaders/{Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("leaders");
+            }
+            else
+            {
+                var messageError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", messageError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            leader = responseHTTP.Response;
+        }
+    }
+
+    private async Task Edit()
+    {
+        var responseHTTP = await repository.Put("api/leaders", leader);
+
+        if (responseHTTP.Error)
+        {
+            var mensajeError = await responseHTTP.GetErrorMessageAsync();
+            await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            leaderForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("leaders");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("leaders");
+    }
+}

@@ -1,0 +1,37 @@
+﻿@page "/leaders/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear lider</h3>
+
+<LeaderForm @ref="leaderForm" Leader="leader" OnValidSubmit="Create" ReturnAction="Return" />
+
+
+
+@code {
+    private Leader leader = new();
+
+    private LeaderForm? leaderForm;
+
+    private async Task Create()
+    {
+        var httpResponse = await repository.Post("/api/leaders", leader);
+        if (httpResponse.Error)
+        {
+            var mensajeError = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            leaderForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("leaders");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("leaders");
+    }
+}
+

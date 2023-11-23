@@ -1,0 +1,97 @@
+﻿@page "/leaders"
+
+@inject IRepository repository
+
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
+
+
+<h3>Liders</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/leaders/create">Nuevo lider</a>
+</div>
+
+<GenericList MyList="Leaders">
+
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Lider</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var leader in Leaders!)
+                {
+                    <tr>
+                        <td>
+                            <a href="/leaders/edit/@leader.Id" class="btn btn-warning"><i class="oi oi-pencil" />Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(leader))><i class="oi oi-trash" />Borrar</button>
+
+                        </td>
+                        <td>
+                            @leader.Name
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Leader>? Leaders { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var responseHppt = await repository.Get<List<Leader>>("api/leaders");
+        Leaders = responseHppt.Response!;
+    }
+
+    private async Task DeleteAsync(Leader leader)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.Delete($"api/leaders/{leader.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
+    }
+}
+
