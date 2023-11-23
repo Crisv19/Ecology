@@ -1,0 +1,98 @@
+﻿@page "/recyclers"
+
+@inject IRepository repository
+
+@inject NavigationManager navigationManager
+@inject SweetAlertService swal
+
+
+<h3>Recicladores</h3>
+
+<div class="mb-3">
+    <a class="btn btn-primary" href="/recyclers/create">Nuevo reciclador</a>
+    
+</div>
+
+<GenericList MyList="Recyclers">
+
+    <Body>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Recicladores</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var recycler in Recyclers!)
+                {
+                    <tr>
+                        <td>
+                            <a href="/recyclers/edit/@recycler.Id" class="btn btn-warning"><i class="oi oi-pencil" />Editar</a>
+                            <button class="btn btn-danger" @onclick=@(() => DeleteAsync(recycler))><i class="oi oi-trash" />Borrar</button>
+
+                        </td>
+                        <td>
+                            @recycler.Name
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </Body>
+
+</GenericList>
+
+@code {
+    public List<Recycler>? Recyclers { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        var responseHppt = await repository.Get<List<Recycler>>("api/recyclers");
+        Recyclers = responseHppt.Response!;
+    }
+
+    private async Task DeleteAsync(Recycler recycler)
+    {
+        var result = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Esta seguro que quieres borrar el registro?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        var confirm = string.IsNullOrEmpty(result.Value);
+
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHTTP = await repository.Delete($"api/recyclers/{recycler.Id}");
+
+        if (responseHTTP.Error)
+        {
+            if (responseHTTP.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var mensajeError = await responseHTTP.GetErrorMessageAsync();
+                await swal.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            await Load();
+        }
+    }
+}
+

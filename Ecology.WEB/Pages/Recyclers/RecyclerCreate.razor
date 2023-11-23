@@ -1,0 +1,34 @@
+﻿@page "/recyclers/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear Reciclador</h3>
+
+<RecyclerForm @ref="recyclerForm" Recycler="recycler" OnValidSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private Recycler recycler = new();
+    private RecyclerForm? recyclerForm;
+
+    private async Task Create()
+    {
+        var httpResponse = await repository.Post("/api/recyclers", recycler);
+        if (httpResponse.Error)
+        {
+            var mensajeError = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            recyclerForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("recyclers");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("recyclers");
+    }
+}
+
