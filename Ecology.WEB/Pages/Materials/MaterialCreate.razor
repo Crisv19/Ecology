@@ -1,0 +1,34 @@
+﻿@page "/materials/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+<h3>Crear Material</h3>
+<MaterialForm @ref="materialForm" Material="material" OnValidSubmit="Create" ReturnAction="Return" />
+
+
+@code {
+    private Material material = new();
+    private MaterialForm? materialForm;
+
+    private async Task Create()
+    {
+        var httpResponse = await repository.Post("/api/materials", material);
+        if (httpResponse.Error)
+        {
+            var mensajeError = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+        }
+        else
+        {
+            materialForm!.FormPostedSuccessfully = true;
+            navigationManager.NavigateTo("materials");
+        }
+    }
+
+    private void Return()
+    {
+        navigationManager.NavigateTo("materials");
+    }
+}
+

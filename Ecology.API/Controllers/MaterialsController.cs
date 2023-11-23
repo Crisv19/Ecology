@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecology.API.Controllers
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     [ApiController]
-    [Route("api/materials")]
+    [Route("/api/materials")]
     public class MaterialsController:ControllerBase
     {
 
