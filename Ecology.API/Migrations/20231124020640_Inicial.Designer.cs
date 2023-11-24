@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecology.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231122193202_Initial")]
-    partial class Initial
+    [Migration("20231124020640_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
